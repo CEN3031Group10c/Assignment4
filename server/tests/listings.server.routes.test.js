@@ -18,7 +18,7 @@ describe('Listings CRUD tests', function() {
     done();
   });
 
-  it('should it able to retrieve all listings', function(done) {
+  it('should be able to retrieve all listings', function(done) {
     agent.get('/api/listings')
       .expect(200)
       .end(function(err, res) {
@@ -28,6 +28,7 @@ describe('Listings CRUD tests', function() {
         done();
       });
   });
+
   it('should be able to retrieve a single listing', function(done) {
     Listing.findOne({name: 'Library West'}, function(err, listing) {
       if(err) {
@@ -51,7 +52,7 @@ describe('Listings CRUD tests', function() {
   it('should be able to save a listing', function(done) {
     var listing = {
       code: 'CEN3035', 
-      name: 'Introduction to Software Engineering', 
+      name: 'Introduction to Software Engineering',
       address: '432 Newell Dr, Gainesville, FL 32611'
     };
     agent.post('/api/listings')
@@ -71,8 +72,9 @@ describe('Listings CRUD tests', function() {
   it('should be able to update a listing', function(done) {
     var updatedListing = {
       code: 'CEN3031', 
-      name: 'Introduction to Software Engineering', 
+      name: 'Introduction to Software Engineering',
       address: '432 Newell Dr, Gainesville, FL 32611'
+
     };
 
     agent.put('/api/listings/' + id)

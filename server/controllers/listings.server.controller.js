@@ -1,4 +1,3 @@
-
 /* Dependencies */
 var mongoose = require('mongoose'), 
     Listing = require('../models/listings.server.model.js');
@@ -45,23 +44,82 @@ exports.read = function(req, res) {
 
 /* Update a listing */
 exports.update = function(req, res) {
-  var listing = req.listing;
-
   /* Replace the article's properties with the new properties found in req.body */
   /* save the coordinates (located in req.results if there is an address property) */
   /* Save the article */
+
+  var listing = req.listing;
+
+  Listing.findById(req.body._id, function(err) {
+      if(err)
+      {
+        console.log(err);
+        res.status(400).send(err);
+      }
+      else
+      {
+        listing.code = req.body.code;
+        listing.name = req.body.name;
+        if (req.address)
+        {
+          listing.address = req.address;
+          listing.coordinates =
+          {
+            latitude: req.results.latitude,
+            longitude: req.results.longitude
+          };
+        }
+
+        listing.save(function(err)
+          {
+            if(err)
+            {
+              console.log(err);
+              res.status(400).send(err);
+            }
+            else
+            {
+              res.json(listing);
+            }
+          }
+        );
+
+      }
+    }
+  );
 };
 
 /* Delete a listing */
 exports.delete = function(req, res) {
-  var listing = req.listing;
-
   /* Remove the article */
+  Listing.findByIdAndRemove(req.listing.id, function(err)
+    {
+      if (err) {
+        console.log(err);
+        res.status(400).send(err);
+      }
+
+      else
+      {
+        console.log('Deleted: ' + req.listing.id);
+        res.send('Deleted!');
+      }
+    }
+  );
 };
 
 /* Retreive all the directory listings, sorted alphabetically by listing code */
-exports.list = function(req, res) {
+exports.list = function(req, res, next) {
   /* Your code here */
+  //res.json(req.listing);
+  Listing.find().exec(function(err, listing) {
+    if(err) {
+      res.status(400).send(err);
+    } else {
+      res.json(listing)
+      next();
+    }
+  });
 };
 
 /* 
